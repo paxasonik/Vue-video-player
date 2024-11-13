@@ -8,7 +8,7 @@
 		v-model:open="isModalOpened"
 		:width="videoWidth"
 		title="PLAYER"
-		@ok="closeModal"
+		@cancel="closeModal"
 	>
 		<template #footer>
 			<Button @click="toggleModal">
@@ -20,14 +20,15 @@
 
 			<Button @click="handleVideo">
 				<template #icon>
-					<CaretRightFilled v-if="isPlayingVideo" />
-					<PauseOutlined v-else />
+					<PauseOutlined v-if="isPlayingVideo" />
+					<CaretRightFilled v-else />
 				</template>
 			</Button>
 
 		</template>
 		<video
-			class="block-video"
+			ref="videoPlayer"
+			class="video-player"
 		>
 			<source src="/video-source.mp4" type="video/mp4" />
 			Ваш браузер не поддерживает видео.
@@ -36,14 +37,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, useTemplateRef, nextTick } from 'vue';
 import { useMachine } from '@xstate/vue';
 import { Button, Modal } from 'ant-design-vue';
 import { CaretRightFilled, ShrinkOutlined, PauseOutlined, ArrowsAltOutlined, PlayCircleOutlined } from '@ant-design/icons-vue';
 import { videoPlayerMachine } from '@/machines/playerMachine.js';
 
 const { snapshot, send } = useMachine(videoPlayerMachine);
-
+const videoPlayer = useTemplateRef('videoPlayer');
 const isModalOpened = ref(false);
 
 const isPlayingVideo = computed(() => {
@@ -80,6 +81,23 @@ const handleVideo = () => {
 	send(isPlayingVideo.value ? { type: 'TOGGLE_PAUSE' } : { type: 'TOGGLE_PLAY' });
 };
 
+const playVideo = () => {
+	nextTick(() => {
+		videoPlayer.value.play();
+	});
+};
+
+const pauseVideo = () => {
+	videoPlayer.value.pause();
+};
+
+watch(isPlayingVideo, (newValue) => {
+	if (newValue) {
+		playVideo();
+	} else {
+		pauseVideo();
+	}
+})
 </script>
 
 <style scoped>
@@ -99,7 +117,7 @@ const handleVideo = () => {
     color: #8585ff
 }
 
-.block-video {
+.video-player {
 		width: 100%;
 		height: 100%;
 }
