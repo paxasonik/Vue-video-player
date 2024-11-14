@@ -1,4 +1,5 @@
 import { createMachine, assign } from 'xstate';
+import { TYPE_MACHINE } from '@/utils/constants.js';
 
 export const videoPlayerMachine = createMachine({
 	id: 'modalWithVideo',
@@ -7,7 +8,7 @@ export const videoPlayerMachine = createMachine({
 	states: {
 		closed: {
 			on: {
-				OPEN_MODAL: {
+				[TYPE_MACHINE.OPEN_MODAL]: {
 					target: 'opened',
 					actions: 'playVideo'
 				}
@@ -21,12 +22,12 @@ export const videoPlayerMachine = createMachine({
 					states: {
 						default: {
 							on: {
-								TOGGLE_SMALLER: 'smaller',
+								[TYPE_MACHINE.TOGGLE_SMALLER]: 'smaller',
 							}
 						},
 						smaller: {
 							on: {
-								TOGGLE_DEFAULT: 'default'
+								[TYPE_MACHINE.TOGGLE_DEFAULT]: 'default'
 							}
 						}
 					}
@@ -36,7 +37,7 @@ export const videoPlayerMachine = createMachine({
 					states: {
 						play: {
 							on: {
-								TOGGLE_PAUSE: {
+								[TYPE_MACHINE.TOGGLE_PAUSE]: {
 									target: 'pause',
 									actions: 'pauseVideo'
 								},
@@ -44,7 +45,7 @@ export const videoPlayerMachine = createMachine({
 						},
 						pause: {
 							on: {
-								TOGGLE_PLAY: {
+								[TYPE_MACHINE.TOGGLE_PLAY]: {
 									target: 'play',
 									actions: 'playVideo'
 								}
@@ -54,7 +55,7 @@ export const videoPlayerMachine = createMachine({
 				},
 			},
 			on: {
-				CLOSE_MODAL: {
+				[TYPE_MACHINE.CLOSE_MODAL]: {
 					target: 'closed',
 					actions: 'pauseVideo'
 				}

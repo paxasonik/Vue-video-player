@@ -42,6 +42,7 @@ import { useMachine } from '@xstate/vue';
 import { Button, Modal } from 'ant-design-vue';
 import { CaretRightFilled, ShrinkOutlined, PauseOutlined, ArrowsAltOutlined, PlayCircleOutlined } from '@ant-design/icons-vue';
 import { videoPlayerMachine } from '@/machines/playerMachine.js';
+import { TYPE_MACHINE } from '@/utils/constants.js';
 
 const { snapshot, send } = useMachine(videoPlayerMachine);
 const videoPlayer = useTemplateRef('videoPlayer');
@@ -64,21 +65,21 @@ const videoWidth = computed(() => {
 });
 
 const openModal = () => {
-	send({ type: 'OPEN_MODAL' });
+	send({ type: TYPE_MACHINE.OPEN_MODAL });
 	isModalOpened.value = true;
 };
 
 const closeModal = () => {
-	send({ type: 'CLOSE_MODAL' });
+	send({ type: TYPE_MACHINE.CLOSE_MODAL });
 	isModalOpened.value = false;
 };
 
 const toggleModal = () => {
-	send(isDefaultSize.value ? { type: 'TOGGLE_DEFAULT' } : { type: 'TOGGLE_SMALLER' });
+	send(isDefaultSize.value ? { type: TYPE_MACHINE.TOGGLE_DEFAULT } : { type: TYPE_MACHINE.TOGGLE_SMALLER });
 };
 
 const handleVideo = () => {
-	send(isPlayingVideo.value ? { type: 'TOGGLE_PAUSE' } : { type: 'TOGGLE_PLAY' });
+	send(isPlayingVideo.value ? { type: TYPE_MACHINE.TOGGLE_PAUSE } : { type: TYPE_MACHINE.TOGGLE_PLAY });
 };
 
 const playVideo = () => {
@@ -97,7 +98,7 @@ watch(isPlayingVideo, (newValue) => {
 	} else {
 		pauseVideo();
 	}
-})
+});
 </script>
 
 <style scoped>
